@@ -1,41 +1,43 @@
-// Just one example
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import './mole.css';
+import moleImage from './mole.png'; // Import your mole image
 
-function MoleContainer(props){
-    return (
-        <div>
-            <h2 className='text-center mb-2'> Mole Container </h2>
-            <h3 className='text-center mb-2'>points <span id='points'>{props.points}</span></h3>
-            <div className="container bg-light h-75">
-                <div className="row mb-2">
-                    <div className='col rounded bg-dark mb-4 p-6' id='hole1'></div>
-                    <div className='col rounded bg-dark mb-4 p-6' id='hole2'></div>
-                    <div className='col rounded bg-dark mb-4 p-6' id='hole3'></div>
-                </div>
-                <div className="row mb-2">
-                    <div className='col rounded bg-dark mb-4' id='hole4'></div>
-                    <div className='col rounded bg-dark mb-4' id='hole5'></div>
-                    <div className='col rounded bg-dark mb-4' id='hole6'></div>
-                </div>
-                <div className="row mb-2">
-                    <div className='col rounded bg-dark mb-4' id='hole7'></div>
-                    <div className='col rounded bg-dark mb-4' id='hole8'></div>
-                    <div className='col rounded bg-dark mb-4' id='hole9'></div>
-                </div>
-                <div className="row mb-2 text-center">
-                    <div className='col rounded bg-light mb-4 p-6'>
-                    <button type="button" id='play' className="btn btn-block btn-primary btn-lg" onClick={props.handlePlay}>Play</button>
-                    </div>
-                    <div className='col rounded bg-light mb-4 p-6'>
-                    <button type="button" id='stop' className="btn btn-block btn-danger btn-lg" onClick={props.handleStop}>Stop</button>
-                    </div>
-                </div>
-            </div>
-            
+function MoleContainer(props) {
+  const [points, setPoints] = useState(0); // Initialize points state
+  const [stopLoop, setStopLoop] = useState(true); // Track if the loop should be stopped
+  const [playButtonVisible, setPlayButtonVisible] = useState(true); // Track if the play button should be visible
 
-        </div>
-    )
-}
+  useEffect(() => {
+    let intervalId;
 
-export default MoleContainer;
+    // Function to generate and display mole image in a random hole
+    const displayMole = () => {
+      // Generate a random hole between 1 and 9
+      const randomHole = Math.floor(Math.random() * 9) + 1;
+      const selectedHole = document.getElementById(`hole${randomHole}`);
+
+      // Display mole image within the selected hole
+      selectedHole.style.backgroundImage = `url(${moleImage})`;
+      // Set a timeout to remove the mole image after 700 milliseconds
+      setTimeout(() => {
+        selectedHole.style.backgroundImage = '';
+      }, 700);
+    };
+    // Start the loop to continuously generate random holes
+    const startLoop = () => {
+        intervalId = setInterval(() => {
+          if (!stopLoop) {
+            displayMole();
+          } else {
+            clearInterval(intervalId); // Stop the loop if stopLoop is true
+          }
+        }, 700);
+      };
+      // Start the loop when the component mounts
+    if (!stopLoop) {
+        startLoop();
+      }
+  
+      // Cleanup function to clear the interval when the component unmounts or stopLoop changes
+      return () => clearInterval(intervalId);
+    }, [stopLoop]); // Run effect whenever stopLoop changes
