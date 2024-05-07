@@ -54,10 +54,6 @@ function MoleContainer(props) {
         setPoints(0); // Reset points to 0
         setStopLoop(false); // Start the loop
         setPlayButtonVisible(false); // Hide the play button
-      };const handlePlay = () => {
-        setPoints(0); // Reset points to 0
-        setStopLoop(false); // Start the loop
-        setPlayButtonVisible(false); // Hide the play button
       };
       const handleStop = () => {
         setStopLoop(true); // Stop the loop
